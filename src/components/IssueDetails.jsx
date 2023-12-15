@@ -8,8 +8,10 @@ import { useQuery } from "@tanstack/react-query";
 function useIssueData(issueNumber) {
   return useQuery({
     queryKey: ["issues", issueNumber],
-    queryFn: () => {
-      return fetch(`/api/issues/${issueNumber}`).then((res) => res.json());
+    queryFn: ({ signal }) => {
+      return fetch(`/api/issues/${issueNumber}`, { signal }).then((res) =>
+        res.json()
+      );
     },
   });
 }
@@ -17,9 +19,9 @@ function useIssueData(issueNumber) {
 function useIssueComments(issueNumber) {
   return useQuery({
     queryKey: ["issues", issueNumber, "comments"],
-    queryFn: () => {
-      return fetch(`/api/issues/${issueNumber}/comments`).then((res) =>
-        res.json()
+    queryFn: ({ signal }) => {
+      return fetch(`/api/issues/${issueNumber}/comments`, { signal }).then(
+        (res) => res.json()
       );
     },
   });
