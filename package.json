@@ -7,11 +7,12 @@
     "serve": "vite preview"
   },
   "dependencies": {
+    "@tanstack/react-query-devtools": "^5.14.0",
     "@uidotdev/react-query-api": "^0.1.18",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-icons": "^4.3.1",
-    "react-query": "^4.0.0-beta.3",
+    "@tanstack/react-query": "^5.14.0",
     "react-router-dom": "^6.1.1"
   },
   "devDependencies": {

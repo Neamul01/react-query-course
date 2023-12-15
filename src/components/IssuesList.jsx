@@ -1,30 +1,30 @@
 import { useState } from "react";
-import { useQuery } from "react-query";
 import { IssueItem } from "./IssueItem";
 import fetchWithError from "../helpers/fetchWithError";
+import { useQuery } from "@tanstack/react-query";
+// import { useQuery } from "react-query";
 
 export default function IssuesList({ labels, status }) {
-  const issuesQuery = useQuery(
-    ["issues", { labels, status }],
-    () => {
+  const issuesQuery = useQuery({
+    queryKey: ["issues", { labels, status }],
+    queryFn: () => {
       const statusString = status ? `&status=${status}` : "";
       const labelsString = labels.map((label) => `labels[]=${label}`).join("&");
       return fetchWithError(`/api/issues?${labelsString}${statusString}`);
     },
-    {
-      staleTime: 1000 * 60,
-    }
-  );
+
+    staleTime: 1000 * 60,
+  });
   const [searchValue, setSearchValue] = useState("");
 
-  const searchQuery = useQuery(
-    ["issues", "search", searchValue],
-    () =>
+  const searchQuery = useQuery({
+    queryKey: ["issues", "search", searchValue],
+    queryFn: () =>
       fetch(`/api/search/issues?q=${searchValue}`).then((res) => res.json()),
-    {
-      enabled: searchValue.length > 0,
-    }
-  );
+
+    enabled: searchValue.length > 0,
+  });
+  console.log(issuesQuery.data);
 
   return (
     <div>
@@ -76,9 +76,9 @@ export default function IssuesList({ labels, status }) {
             <p>Loading...</p>
           ) : (
             <>
-              <p>{searchQuery.data.count} Results</p>
+              <p>{searchQuery.data?.count} Results</p>
               <ul className="issues-list">
-                {searchQuery.data.items.map((issue) => (
+                {searchQuery.data?.items?.map((issue) => (
                   <IssueItem
                     key={issue.id}
                     title={issue.title}
