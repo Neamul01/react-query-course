@@ -24,7 +24,8 @@ export default function IssuesList({ labels, status }) {
 
     enabled: searchValue.length > 0,
   });
-  console.log(issuesQuery.data);
+  console.log(searchQuery.data);
+  console.log("issues query", issuesQuery.data);
 
   return (
     <div>
@@ -52,8 +53,7 @@ export default function IssuesList({ labels, status }) {
         <p>Loading...</p>
       ) : issuesQuery.isError ? (
         <p>{issuesQuery.error.message}</p>
-      ) : searchQuery.fetchStatus === "idle" &&
-        searchQuery.isLoading === true ? (
+      ) : searchValue.length === 0 || !searchQuery.data ? (
         <ul className="issues-list">
           {issuesQuery.data.map((issue) => (
             <IssueItem
