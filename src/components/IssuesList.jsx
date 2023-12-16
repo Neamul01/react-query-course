@@ -2,6 +2,7 @@ import { useState } from "react";
 import { IssueItem } from "./IssueItem";
 import fetchWithError from "../helpers/fetchWithError";
 import { useQuery } from "@tanstack/react-query";
+import Loader from "./Loader";
 // import { useQuery } from "react-query";
 
 export default function IssuesList({ labels, status }) {
@@ -50,7 +51,7 @@ export default function IssuesList({ labels, status }) {
           }}
         />
       </form>
-      <h2>Issues List</h2>
+      <h2>Issues List {issuesQuery.isFetching ? <Loader /> : null}</h2>
       {issuesQuery.isLoading ? (
         <p>Loading...</p>
       ) : issuesQuery.isError ? (
