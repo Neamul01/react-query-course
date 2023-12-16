@@ -3,6 +3,8 @@ import { GoIssueOpened, GoIssueClosed, GoComment } from "react-icons/go";
 import { relativeDate } from "../helpers/relativeDate";
 import { useUserData } from "../helpers/useUserData";
 import { Label } from "./Label";
+import { useQueryClient } from "@tanstack/react-query";
+import fetchWithError from "../helpers/fetchWithError";
 
 export function IssueItem({
   title,
@@ -16,8 +18,27 @@ export function IssueItem({
 }) {
   const assigneeUser = useUserData(assignee);
   const createdByUser = useUserData(createdBy);
+  const queryClient = useQueryClient();
+
   return (
-    <li>
+    <li
+      onMouseEnter={async () => {
+        // Make sure to handle errors here, React Query will not throw them in prefetching
+        try {
+          await queryClient.prefetchQuery({
+            queryKey: ["issues", number.toString()],
+            queryFn: () => fetchWithError(`/api/issues/${number}`),
+          });
+          await queryClient.prefetchQuery({
+            queryKey: ["issues", number.toString(), "comments"],
+            queryFn: () => fetchWithError(`/api/issues/${number}/comments`),
+          });
+        } catch (error) {
+          // Handle or log the error
+          console.error("Error prefetching data:", error);
+        }
+      }}
+    >
       <div>
         {status === "done" || status === "cancelled" ? (
           <GoIssueClosed style={{ color: "red" }} />

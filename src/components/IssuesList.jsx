@@ -1,19 +1,28 @@
 import { useState } from "react";
 import { IssueItem } from "./IssueItem";
 import fetchWithError from "../helpers/fetchWithError";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import Loader from "./Loader";
 // import { useQuery } from "react-query";
 
 export default function IssuesList({ labels, status }) {
+  const queryClient = useQueryClient();
+
   const issuesQuery = useQuery({
     queryKey: ["issues", { labels, status }],
-    queryFn: ({ signal }) => {
+    queryFn: async ({ signal }) => {
       const statusString = status ? `&status=${status}` : "";
       const labelsString = labels.map((label) => `labels[]=${label}`).join("&");
-      return fetchWithError(`/api/issues?${labelsString}${statusString}`, {
-        signal,
+      const results = await fetchWithError(
+        `/api/issues?${labelsString}${statusString}`,
+        {
+          signal,
+        }
+      );
+      results.forEach((issue) => {
+        queryClient.setQueryData(["issues", issue.number.toString()], issue);
       });
+      return results;
     },
   });
   const [searchValue, setSearchValue] = useState("");
