@@ -15,7 +15,7 @@ export default function AddIssue() {
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ["issues"], exact: true });
       queryClient.setQueryData(["issues", data.number.toString()], data);
-      navigate(`issue/${data.number}`);
+      navigate(`/issue/${data.number}`);
     },
   });
   return (

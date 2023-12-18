@@ -4,6 +4,7 @@ import { relativeDate } from "../helpers/relativeDate";
 import { useUserData } from "../helpers/useUserData";
 import { IssueHeader } from "./IssueHeader";
 import { useQuery } from "@tanstack/react-query";
+import IssueStatus from "./IssueStatus";
 
 function useIssueData(issueNumber) {
   return useQuery({
@@ -76,7 +77,12 @@ export default function IssueDetails() {
                 ))
               )}
             </section>
-            <aside></aside>
+            <aside>
+              <IssueStatus
+                status={issueQuery.data.status}
+                issueNumber={issueQuery.data.number.toString()}
+              />
+            </aside>
           </main>
         </>
       )}
